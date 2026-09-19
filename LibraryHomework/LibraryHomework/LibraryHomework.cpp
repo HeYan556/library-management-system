@@ -1,20 +1,136 @@
-﻿// LibraryHomework.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
-//
+﻿#include <iostream>
+#include<string>
 
-#include <iostream>
+using namespace std;
+class Book {
+private:
+	string title;
+	string author;
+	int year;
+	string publisher;
+	int pages;
+public:
+	Book(string t, string a, int y, string publisher, int pages);
+	string getTitle();
+	string getAuthor();
+	int getYear();
+	string getPublisher();
+	int getPages();
 
-int main()
+	// 可直接访问的公有字段：定价与在馆状态
+	double price;
+	bool available; // true = 可借, false = 不可借
+
+	// 基本操作：修改器（setters）
+	void setTitle(const string& t);
+	void setAuthor(const string& a);
+	void setYear(int y);
+	void setPublisher(const string& p);
+	void setPages(int p);
+	void setPrice(double p);
+	void setAvailable(bool a);
+
+	// 基本操作：访问器（getters）
+	double getPrice();
+	bool isAvailable();
+
+	// 输出信息
+	void printInfo();
+};
+
+// 方法实现
+Book::Book(string t, string a, int y, string publisher, int pages)
 {
-    std::cout << "Hello World!\n";
+    title = t;
+    author = a;
+    year = y;
+    this->publisher = publisher;
+    this->pages = pages;
+    // 初始化公有字段默认值
+    price = 0.0;
+    available = true;
 }
 
-// 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
-// 调试程序: F5 或调试 >“开始调试”菜单
+string Book::getTitle()
+{
+    return title;
+}
 
-// 入门使用技巧: 
-//   1. 使用解决方案资源管理器窗口添加/管理文件
-//   2. 使用团队资源管理器窗口连接到源代码管理
-//   3. 使用输出窗口查看生成输出和其他消息
-//   4. 使用错误列表窗口查看错误
-//   5. 转到“项目”>“添加新项”以创建新的代码文件，或转到“项目”>“添加现有项”以将现有代码文件添加到项目
-//   6. 将来，若要再次打开此项目，请转到“文件”>“打开”>“项目”并选择 .sln 文件
+string Book::getAuthor()
+{
+    return author;
+}
+
+int Book::getYear()
+{
+    return year;
+}
+
+string Book::getPublisher()
+{
+    return publisher;
+}
+
+int Book::getPages()
+{
+    return pages;
+}
+
+// setters
+void Book::setTitle(const string& t)
+{
+    title = t;
+}
+
+void Book::setAuthor(const string& a)
+{
+    author = a;
+}
+
+void Book::setYear(int y)
+{
+    year = y;
+}
+
+void Book::setPublisher(const string& p)
+{
+    publisher = p;
+}
+
+void Book::setPages(int p)
+{
+    pages = p;
+}
+
+void Book::setPrice(double p)
+{
+    price = p;
+}
+
+void Book::setAvailable(bool a)
+{
+    available = a;
+}
+
+// getters for price/available
+
+double Book::getPrice()
+{
+    return price;
+}
+
+bool Book::isAvailable()
+{
+    return available;
+}
+
+void Book::printInfo()
+{
+    cout << "Title: " << title << endl;
+    cout << "Author: " << author << endl;
+    cout << "Year: " << year << endl;
+    cout << "Publisher: " << publisher << endl;
+    cout << "Pages: " << pages << endl;
+    cout << "Price: " << price << endl;
+    cout << "Available: " << (available ? "Yes" : "No") << endl;
+}
