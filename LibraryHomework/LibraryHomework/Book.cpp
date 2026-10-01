@@ -44,14 +44,14 @@ void Book::setYear(int y)
     year = y;
 }
 
-void Book::setPublisher(const string& p)
+void Book::setPublisher(const string& pu)
 {
-    publisher = p;
+    publisher = pu;
 }
 
-void Book::setPages(int p)
+void Book::setPages(int pa)
 {
-    pages = p;
+    pages = pa;
 }
 
 void Book::setPrice(double p)
@@ -112,4 +112,46 @@ void Book::printInfo()
     cout << "页数: " << pages << endl;
     cout << "定价: " << price << endl;
     cout << "可借: " << (available ? "是" : "否") << endl;
+}
+
+// ==================== 书库相关（静态成员实现） ====================
+// 静态成员变量必须在类外定义并初始化（所有 Book 对象共享这一份数据）
+int   Book::bookCount = 0;               // 一开始书库里没有书
+Book* Book::bookLib[Book::MAX_BOOKS];    // 书库：50 个"放书的位置"
+
+// 把一本图书放入书库（参数传地址）
+void Book::addBook(Book* b)
+{
+    // 先判断地址是否有效
+    if (b == NULL)
+    {
+        cout << "添加失败：图书地址无效！" << endl;
+        return;
+    }
+    // 再判断书库是否已满
+    if (bookCount >= MAX_BOOKS)
+    {
+        cout << "书库已满（上限 " << MAX_BOOKS << " 本），无法再添加！" << endl;
+        return;
+    }
+    bookLib[bookCount] = b;   // 存入这本书的地址
+    bookCount++;              // 书库数量加 1
+    cout << "《" << b->getTitle() << "》已放入书库（当前共 "
+         << bookCount << " 本）。" << endl;
+}
+
+// 显示书库中所有图书信息和状态
+void Book::showbook()
+{
+    cout << "========== 书库图书清单（共 " << bookCount << " 本） ==========" << endl;
+    if (bookCount == 0)
+    {
+        cout << "书库暂时为空。" << endl;
+        return;
+    }
+    for (int i = 0; i < bookCount; i++)
+    {
+        cout << "----- 第 " << i + 1 << " 本 -----" << endl;
+        bookLib[i]->printInfo();   // 复用已有的输出函数（含"可借"状态）
+    }
 }

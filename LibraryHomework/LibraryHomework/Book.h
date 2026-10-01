@@ -48,6 +48,16 @@ public:
 
     // ---------- 输出信息 ----------
     void printInfo();
+
+    // ---------- 书库（静态成员：全体 Book 对象共享同一份数据） ----------
+    static const int MAX_BOOKS = 50;   // 书库容量上限（图书数量少于 50 本）
+
+    static int   bookCount;            // 【成员变量】书库中当前图书数量
+    static Book* bookLib[MAX_BOOKS];   // 【成员变量】书库：存放所有图书的地址
+                                       //（存地址而不是复制品，保证显示的状态始终是最新的）
+
+    static void addBook(Book* b);      // 把一本图书放入书库（传地址）
+    static void showbook();            // 【成员函数】显示书库中所有图书信息和状态
 };
 
 #endif // BOOK_H
