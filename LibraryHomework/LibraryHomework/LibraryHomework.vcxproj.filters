@@ -18,6 +18,9 @@
     <ClCompile Include="Book.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Stack.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="Students.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -27,6 +30,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Book.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Stack.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Students.h">
