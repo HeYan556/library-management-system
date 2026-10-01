@@ -1,10 +1,11 @@
 ﻿#include <iostream>
 #include "Book.h"
+#include "Stack.h"
 #include "Students.h"
 
 using namespace std;
 
-// ==================== 测试主函数 ====================
+//  测试主函数 
 // 覆盖场景：正常借书、借不可借的书、达到借书上限、传空地址、多学生共享图书
 int main()
 {
@@ -25,16 +26,17 @@ int main()
     Book b5("Clean Code", "Robert C. Martin", 2008, "Prentice Hall", 464);
     b5.setAvailable(false);
 
-    // ---------- 1.5 把所有图书放入书库 ----------
-    Book::addBook(&b1);          // 传地址：书库中保存的是书本身的地址
-    Book::addBook(&b2);
-    Book::addBook(&b3);
-    Book::addBook(&b4);
-    Book::addBook(&b5);
+    // ---------- 1.5 创建书库，把所有图书放进去 ----------
+    Stack lib;                  // 一个书库对象（Stack 类）
+    lib.addBook(&b1);           // 传地址：书库中保存的是书本身的地址
+    lib.addBook(&b2);
+    lib.addBook(&b3);
+    lib.addBook(&b4);
+    lib.addBook(&b5);
 
     // 调用 showbook：显示书库中所有图书的信息和状态（借书前的初始状态）
-    cout << endl << "===== 书库初始状态（Book::showbook） =====" << endl;
-    Book::showbook();
+    cout << endl << "===== 书库初始状态（lib.showbook） =====" << endl;
+    lib.showbook();
 
     // ---------- 2. 创建学生对象 ----------
     Student s1("张三", "2021001", "计算机 2101 班");
@@ -75,7 +77,7 @@ int main()
 
     // ---------- 7. 借书后再看书库：图书状态已同步更新 ----------
     cout << endl << "===== 借书后的书库状态 =====" << endl;
-    Book::showbook();
+    lib.showbook();
 
     return 0;
 }
