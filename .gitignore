@@ -86,3 +86,9 @@ Release/
 
 # 报告构建的临时工作目录（生成 docx 图片用，不纳入版本控制）
 .report_build/
+
+# 设计报告（本地保留，不推送到远程）
+LibraryHomework/*.docx
+
+# Word 临时锁文件（文档打开时产生）
+~$*
