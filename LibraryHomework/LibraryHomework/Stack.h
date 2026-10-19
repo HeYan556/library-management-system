@@ -1,37 +1,37 @@
 #ifndef STACK_H
 #define STACK_H
 
-#include <iostream>
-#include "Book.h"
+#include "BookResource.h"
 
 using namespace std;
 
 // ==================== 书库类 Stack ====================
-// 职责单一：只负责"管理一批图书"（存书、显示所有书的状态），
-// 不去管某一本书自己的属性，也不去管学生怎么借书。
-//（原来书库是 Book 类里的静态成员，现在拆出来单独成一个类，
-//  让 Book 只描述"一本书"，Stack 只描述"一个书库"。）
+// 职责单一：只负责"管理一批资源"（存资源、显示所有资源的状态）。
+// 不去管某一资源自己的属性，也不去管学生怎么借阅。
 //
-// 与 Book 类的关系：
-//   聚合关系：bookLib 里存的是 Book 的地址，书在书库外面创建，
-//   生命周期不跟着书库走，所以是"整体-部分"关系中较松的一种（空心菱形）。
+// 与 BookResource 的关系：
+//   聚合：resLib 里存的是 BookResource 派生类对象的地址，
+//   资源在书库外创建，生命周期不随书库。
+//
+// 本次升级：原 Book* → BookResource*，可统一收纳一般图书、杂志、电子资源。
+
 class Stack {
 private:
-    static const int MAX_BOOKS = 50;   // 书库容量上限（图书数量少于 50 本）
-
-    Book* bookLib[MAX_BOOKS];   // 【成员变量】书库：存放所有图书的地址
-                                //（存地址而不是复制品，保证显示的状态始终是最新的）
-    int   bookCount;            // 【成员变量】书库中当前图书数量
+    static const int MAX_BOOKS = 50;        // 书库容量上限
+    BookResource* resLib[MAX_BOOKS];        // 存放所有资源的地址
+    int           bookCount;                // 当前资源数量
 
 public:
     // ---------- 构造函数 ----------
-    Stack();                    // 刚创建的书库是空的（bookCount = 0）
+    Stack();                                // 刚创建的书库是空的
 
-    // ---------- 存书 ----------
-    void addBook(Book* b);      // 把一本图书放入书库（参数传地址）
+    // ---------- 存资源 ----------
+    void addBook(BookResource* r);          // 接受任何 BookResource 派生类
 
     // ---------- 显示 ----------
-    void showbook();            // 显示书库中所有图书信息和状态
+    void showbook();                         // ⚠️ 这次未引入 virtual，
+                                            //    通过 BookResource* 调用
+                                            //    printInfo() 时只执行基类版本
 };
 
 #endif // STACK_H

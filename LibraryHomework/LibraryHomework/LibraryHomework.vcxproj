@@ -143,13 +143,19 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Book.cpp" />
+    <ClCompile Include="BookResource.cpp" />
+    <ClCompile Include="ElectronicResource.cpp" />
+    <ClCompile Include="GeneralBook.cpp" />
+    <ClCompile Include="Magazine.cpp" />
     <ClCompile Include="Stack.cpp" />
     <ClCompile Include="Students.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Book.h" />
+    <ClInclude Include="BookResource.h" />
+    <ClInclude Include="ElectronicResource.h" />
+    <ClInclude Include="GeneralBook.h" />
+    <ClInclude Include="Magazine.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="Students.h" />
   </ItemGroup>

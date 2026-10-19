@@ -4,33 +4,38 @@
 #include <string>
 #include <vector>
 #include <cstddef>
-#include "Book.h"
+#include "BookResource.h"
 
 using namespace std;
 
-// 一个学生最多可以借的书本数（借书上限）
+// 一个学生最多可以借的资源份数
 const int MAX_BORROW = 3;
 
 // ==================== 学生类 Student ====================
-// 抽象出的属性：姓名、学号、班级、当前借了多少本书、借阅记录。
+// 实验四升级：遵守依赖倒置原则（DIP）。
 //
-// 与 Book 类的两种关系：
-//   1) 依赖关系（主要）：borrowBook(Book* book) 的参数传递地址，
-//      方法内部通过 Book 的公有接口判断/修改书的状态。
-//   2) 组合关系（次要）：borrowedBooks 是 Book 对象数组，
-//      它是学生自身的一部分，随学生对象一起创建、一起销毁。
+//   升级前：borrowBook(GeneralBook*) + GeneralBook 值数组
+//           → 高层模块依赖具体子类，杂志/电子资源借不了
+//   升级后：borrowBook(BookResource*) + BookResource* 指针数组
+//           → 高层模块只依赖抽象基类，任意子类资源都能借
+//
+// 与 BookResource 的关系：
+//   1) 依赖关系：borrowBook 通过基类指针调用虚函数 borrow()，
+//      具体执行哪个子类的流程由运行时的对象类型决定（多态）。
+//   2) 组合关系：borrowedBooks 是基类指针数组，
+//      保存所借资源的地址（资源本身在书库/主函数中创建）。
+
 class Student {
 private:
     string name;        // 姓名
     string id;          // 学号
     string className;   // 班级
 
-    // 【组合关系】学生"拥有"自己的借阅区，Book 对象是 Student 的组成部分
-    Book borrowedBooks[MAX_BORROW];   // 当前借在手里的书
+    // 【组合】学生"拥有"自己的借阅区（基类指针数组，统一管理各类资源）
+    BookResource* borrowedBooks[MAX_BORROW];
+    int           borrowedCount;
 
-    int borrowedCount;                // 当前借了多少本书（学生状态）
-
-    // 借阅记录：用 STL 容器 vector<string>（动态数组）保存，借一本就追加一条
+    // 借阅记录
     vector<string> borrowRecords;
 
 public:
@@ -45,13 +50,10 @@ public:
     int    getBorrowedCount();
     int    getMaxBorrow();
 
-    // 判断学生自身状态是否允许再借书（是否达到借书上限）
     bool canBorrow();
 
-    // ---------- 借书（依赖关系所在） ----------
-    // 参数必须传地址：这里使用 Book 指针。
-    // 借书能否成功，取决于"学生状态"和"书的状态"是否都允许。
-    void borrowBook(Book* book);
+    // ---------- 借书（依赖抽象 BookResource，多态调用） ----------
+    void borrowBook(BookResource* book);
 
     // ---------- 输出信息 ----------
     void printInfo();

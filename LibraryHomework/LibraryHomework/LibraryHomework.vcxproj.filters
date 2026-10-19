@@ -15,7 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Book.cpp">
+    <ClCompile Include="BookResource.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ElectronicResource.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralBook.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Magazine.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Stack.cpp">
@@ -29,7 +38,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Book.h">
+    <ClInclude Include="BookResource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ElectronicResource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneralBook.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Magazine.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Stack.h">
