@@ -37,6 +37,11 @@ public:
     void printInfo() override;
     void borrow() override;
     void returnBook() override;
+
+    // ---------- 序列化（实验六）：标签 MG，特有字段 期号 / 周期 / 主编 ----------
+    const char* typeTag() const override;
+    void saveTo(ostream& os) const override;
+    void loadFrom(istream& is) override;
 };
 
 #endif // MAGAZINE_H

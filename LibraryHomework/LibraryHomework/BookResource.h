@@ -23,6 +23,7 @@ using namespace std;
 class BookResource {
 private:
     // ---- 共有字段（所有资源类型都具备）----
+    int    id;         // 资源编号（实验六：持久化与借阅都靠它定位资源）
     string title;      // 名称（书名/刊名/资源名）
     string author;     // 责任人（作者/主编/出品方）
     int    year;       // 出版年份
@@ -59,6 +60,24 @@ public:
     double getPrice()     const;
     bool   isAvailable()  const;
 
+    // ---------- 编号（实验六新增） ----------
+    int  getId() const;
+    void setId(int i);
+
+    // ---------- 序列化接口（实验六：输入输出流） ----------
+    // typeTag   ：标明具体子类，写入文件与读回时靠它判断该 new 哪个子类
+    // saveTo    ：把本对象写成一行文本
+    // loadFrom  ：从一行文本恢复本对象
+    //
+    // 说明：operator<< / operator>> 无法声明为虚函数（左操作数是流对象），
+    // 因此采用"非虚接口 + 虚实现"：运算符内部调用虚函数完成派发。
+    virtual const char* typeTag() const = 0;
+    virtual void saveTo(ostream& os) const = 0;
+    virtual void loadFrom(istream& is) = 0;
+
+    friend ostream& operator<<(ostream& os, const BookResource& r);
+    friend istream& operator>>(istream& is, BookResource& r);
+
     // ---------- 共有字段输出（普通函数，供子类复用） ----------
     void printCommonInfo() const;
 
@@ -66,6 +85,11 @@ public:
     virtual void printInfo() = 0;     // 完整信息输出（含子类特有字段）
     virtual void borrow() = 0;        // 借（各子类流程不同：扫码/登记/直接访问）
     virtual void returnBook() = 0;    // 还（各子类流程不同）
+
+protected:
+    // 供三个子类的 saveTo / loadFrom 复用，避免把共有字段抄三遍
+    void saveCommon(ostream& os) const;
+    void loadCommon(istream& is);
 };
 
 #endif // BOOKRESOURCE_H

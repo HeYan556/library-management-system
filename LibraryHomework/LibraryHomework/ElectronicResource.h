@@ -37,6 +37,11 @@ public:
     void printInfo() override;
     void borrow() override;
     void returnBook() override;
+
+    // ---------- 序列化（实验六）：标签 ER，特有字段 格式 / 链接 / 大小 ----------
+    const char* typeTag() const override;
+    void saveTo(ostream& os) const override;
+    void loadFrom(istream& is) override;
 };
 
 #endif // ELECTRONICRESOURCE_H

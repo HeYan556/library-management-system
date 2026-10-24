@@ -61,3 +61,22 @@ void ElectronicResource::returnBook() {
          << " ……  归还成功！" << endl;
     setAvailable(true);
 }
+
+// ---------- 序列化（实验六：文件输入输出流） ----------
+// 一行格式：RES|ER|编号|共有字段…|格式|链接|大小(MB)
+const char* ElectronicResource::typeTag() const { return "ER"; }
+
+void ElectronicResource::saveTo(ostream& os) const {
+    os << "RES|ER|";
+    saveCommon(os);
+    os << '|' << format << '|' << url << '|' << fileSize;
+}
+
+void ElectronicResource::loadFrom(istream& is) {
+    loadCommon(is);
+    string f;
+    getline(is, format, '|');
+    getline(is, url, '|');
+    getline(is, f);
+    fileSize = f.empty() ? 0.0 : stod(f);
+}

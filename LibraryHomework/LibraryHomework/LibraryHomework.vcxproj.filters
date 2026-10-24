@@ -24,10 +24,19 @@
     <ClCompile Include="GeneralBook.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="LibraryRepository.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LibrarySystem.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="Magazine.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Students.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="User.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
@@ -47,6 +56,12 @@
     <ClInclude Include="GeneralBook.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="LibraryRepository.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="LibrarySystem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="Magazine.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -54,6 +69,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Students.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="User.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

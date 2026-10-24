@@ -1,149 +1,59 @@
 ﻿#include <iostream>
-#include <string>
+#include <windows.h>        // SetConsoleOutputCP：让控制台按 UTF-8 显示中文
+
 #include "BookResource.h"
-#include "GeneralBook.h"
-#include "Magazine.h"
-#include "ElectronicResource.h"
 #include "Stack.h"
 #include "Students.h"
-#include "Algorithms.h"
+#include "User.h"
+#include "LibraryRepository.h"
+#include "LibrarySystem.h"
 
 using namespace std;
 
-// ==================== 实验五测试主函数：模板与泛型算法 ====================
-// 覆盖场景：
-//   1) Stack<T> 类模板：同一份容器代码，既能装 BookResource* 也能装 Student
-//   2) 迭代器接口：begin()/end() 让自定义容器也能吃泛型算法
-//   3) 函数模板算法：forEach / findIf / countIf / filter / countType / printAll
-//   4) 编译期泛型 + 运行期多态协同：同一句 ->printInfo() 各自派发到子类版本
-//   5) 学生借阅区改用 vector 后，支持"归还"（erase），定长数组做不到
+// ==================== 实验六：文件输入输出流 + 用户登录 + 持久化 ====================
+// 程序流程：
+//   1) 从三个文本文件加载数据（资源 → 学生 → 账号，顺序不能乱）
+//   2) 用户登录（最多 3 次机会），按角色进入不同菜单
+//   3) 退出时把内存中的对象写回文件，下次启动状态还在
+//
+// 说明：控制台默认是 GBK 编码，而源码与数据文件都是 UTF-8，
+// 若不做下面两行设置，中文会显示成乱码。
 
 int main() {
-    // ============================================================
-    // 1. 准备三种资源（具体子类对象）
-    // ============================================================
-    GeneralBook b1("C++ Primer Plus", "Stephen Prata", 2012,
-                   "Addison-Wesley", 1200,
-                   "978-0321776402", 6);
-    b1.setPrice(99.00);
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
 
-    GeneralBook b2("Effective C++", "Scott Meyers", 2005,
-                   "Addison-Wesley", 320,
-                   "978-0321334879", 3);
-    b2.setPrice(58.00);
+    // 三个容器都是实验五的类模板 Stack<T> 的实例
+    Stack<BookResource*> library;   // 资源库
+    Stack<Student>       roster;    // 学生名册
+    Stack<User>          users;     // 账号表
 
-    Magazine m1("程序员", "程序员的良师益友", 2024,
-                "《程序员》杂志社", 96,
-                312, "月刊", "张主编");
-    m1.setPrice(20.00);
+    cout << "========== 图书管理系统 启动 ==========" << endl;
 
-    ElectronicResource e1("Clean Architecture (eBook)", "Robert C. Martin", 2017,
-                          "Pearson", 0,
-                          "EPUB", "https://lib.example/clean-arch.epub", 12.5);
-    e1.setPrice(30.00);
+    // ---------- 1. 加载（资源必须先于学生，学生要按编号反查资源） ----------
+    LibraryRepository::loadResources("data/resources.txt", library);
+    LibraryRepository::loadStudents ("data/students.txt",  roster, library);
+    LibraryRepository::loadUsers    ("data/users.txt",     users);
 
-    ElectronicResource e2("设计模式：可复用面向对象软件的基础 (PDF)", "GoF", 1994,
-                          "机械工业出版社", 0,
-                          "PDF", "https://lib.example/gof.pdf", 8.2);
-    e2.setPrice(0.00);
-    e2.setAvailable(false);   // 模拟已被借出，用于测试失败分支
+    // ---------- 2. 登录 ----------
+    LibrarySystem sys(library, roster, users);
+    User* current = sys.login();
+    if (current == nullptr) {
+        cout << "三次登录均失败，程序退出。" << endl;
+        return 0;
+    }
+    if (current->isAdmin()) sys.runAdmin(*current);
+    else                    sys.runReader(*current);
 
-    // ============================================================
-    // 2. 【类模板】Stack<BookResource*>：装基类指针，多态完整保留
-    // ============================================================
-    cout << "===== Stack<BookResource*>：类模板装基类指针 =====" << endl;
-    Stack<BookResource*> lib;
-    lib.addBook(&b1);
-    lib.addBook(&b2);
-    lib.addBook(&m1);
-    lib.addBook(&e1);
-    lib.addBook(&e2);
-    cout << "书库共 " << lib.size() << " 份资源。" << endl;
+    // ---------- 3. 退出前保存 ----------
+    sys.saveAll();
 
-    // ============================================================
-    // 3. 【泛型算法】算法只认迭代器区间，与容器类型解耦
-    // ============================================================
-    cout << endl << "===== 泛型算法 printAll：遍历 + 多态打印 =====" << endl;
-    printAll(lib.begin(), lib.end());
+    // ---------- 4. 释放资源（基类指针 + 虚析构，确保子类部分也被清理） ----------
+    for (Stack<BookResource*>::iterator it = library.begin(); it != library.end(); ++it) {
+        delete *it;
+    }
+    library.clear();
 
-    // countIf：按谓词统计
-    int expensive = countIf(lib.begin(), lib.end(),
-                            [](BookResource* r) { return r->getPrice() >= 50.0; });
-    cout << endl << "定价 >= 50 元的资源有 " << expensive << " 份。" << endl;
-
-    // findIf：按谓词查找
-    Stack<BookResource*>::iterator found =
-        findIf(lib.begin(), lib.end(),
-               [](BookResource* r) { return r->getTitle() == "程序员"; });
-    cout << endl << "--- findIf：按刊名查找《程序员》---" << endl;
-    if (found != lib.end()) (*found)->printInfo();
-    else                    cout << "未找到。" << endl;
-
-    // countType：模板 + dynamic_cast（运行期类型识别）+ 多态
-    cout << endl << "--- countType：按真实类型分别统计 ---" << endl;
-    cout << "纸质书 "   << countType<GeneralBook>(lib.begin(), lib.end())
-         << " 本，杂志 " << countType<Magazine>(lib.begin(), lib.end())
-         << " 份，电子资源 "
-         << countType<ElectronicResource>(lib.begin(), lib.end())
-         << " 份。" << endl;
-
-    // filter + forEach：筛出子集后再遍历
-    vector<BookResource*> cheap =
-        filter(lib.begin(), lib.end(),
-               [](BookResource* r) { return r->getPrice() < 50.0; });
-    cout << endl << "--- filter：定价低于 50 元的共 " << cheap.size()
-         << " 份 ---" << endl;
-    forEach(cheap.begin(), cheap.end(),
-            [](BookResource* r) { cout << "  - 《" << r->getTitle()
-                                       << "》 " << r->getPrice() << " 元" << endl; });
-
-    // ============================================================
-    // 4. 借阅与归还：借阅区改用 vector，归还 = erase
-    // ============================================================
-    cout << endl << "===== 借阅与归还（vector 让「摘除」成为可能）=====" << endl;
-    Student s1("张三", "2021001", "计算机 2101 班");
-    Student s2("李四", "2021002", "计算机 2102 班");
-
-    cout << "--- 借一般图书 ---" << endl;
-    s1.borrowBook(&b2);
-    cout << endl << "--- 借杂志 ---" << endl;
-    s1.borrowBook(&m1);
-    cout << endl << "--- 借已被借出的电子资源（应失败）---" << endl;
-    s1.borrowBook(&e2);
-    cout << endl << "--- 借电子资源 ---" << endl;
-    s1.borrowBook(&e1);
-    cout << endl << "--- 已达上限（应失败）---" << endl;
-    s1.borrowBook(&b1);
-
-    s1.printInfo();
-
-    cout << endl << "--- 归还杂志（多态归还 + 从容器中 erase）---" << endl;
-    s1.returnBook(&m1);
-    s1.printInfo();
-    cout << endl << "--- 归还一本没借过的资源（应失败）---" << endl;
-    s1.returnBook(&b1);
-
-    s2.borrowBook(&m1);
-    s1.printBorrowRecords();
-    s2.printBorrowRecords();
-
-    // ============================================================
-    // 5. 【同一份模板代码】Stack<Student>：装完全不同类型的元素
-    // ============================================================
-    cout << endl << "===== Stack<Student>：类模板复用，装另一种元素 =====" << endl;
-    Stack<Student> roster;
-    roster.push(s1);
-    roster.push(s2);
-    cout << "名册共 " << roster.size() << " 人：" << endl;
-    forEach(roster.begin(), roster.end(),
-            [](Student& s) { cout << "  " << s.getId() << "  " << s.getName()
-                                  << "（" << s.getClassName() << "）" << endl; });
-
-    // ============================================================
-    // 6. 借还之后的书库状态（对象共享，状态已同步）
-    // ============================================================
-    cout << endl << "===== 借阅后的书库状态 =====" << endl;
-    lib.showbook();
-
+    cout << "数据已保存，再见！" << endl;
     return 0;
 }

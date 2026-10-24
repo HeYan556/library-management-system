@@ -5,6 +5,7 @@
 #include <vector>
 #include <cstddef>
 #include "BookResource.h"
+#include "Stack.h"
 
 using namespace std;
 
@@ -60,6 +61,14 @@ public:
 
     // ---------- 还书（实验五新增：依赖 vector 的 erase） ----------
     void returnBook(BookResource* book);
+
+    // ---------- 序列化（实验六：文件输入输出流） ----------
+    // 一行格式：STU|姓名|学号|班级|借阅中的资源编号(;分隔，可为空)
+    void saveTo(ostream& os) const;
+    void loadFrom(istream& is, const Stack<BookResource*>& lib);
+
+    // 从文件恢复借阅区时使用：只登记、不打印提示、不再走借书流程
+    void restoreBorrowed(BookResource* book);
 
     // ---------- 输出信息 ----------
     void printInfo() const;

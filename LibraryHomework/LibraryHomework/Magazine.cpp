@@ -59,3 +59,21 @@ void Magazine::returnBook() {
          << " 期 ……  归还成功！" << endl;
     setAvailable(true);
 }
+
+// ---------- 序列化（实验六：文件输入输出流） ----------
+// 一行格式：RES|MG|编号|共有字段…|期号|周期|主编
+const char* Magazine::typeTag() const { return "MG"; }
+
+void Magazine::saveTo(ostream& os) const {
+    os << "RES|MG|";
+    saveCommon(os);
+    os << '|' << issueNo << '|' << period << '|' << chiefEditor;
+}
+
+void Magazine::loadFrom(istream& is) {
+    loadCommon(is);
+    string f;
+    getline(is, f, '|');  issueNo = f.empty() ? 0 : stoi(f);
+    getline(is, period, '|');
+    getline(is, chiefEditor);
+}

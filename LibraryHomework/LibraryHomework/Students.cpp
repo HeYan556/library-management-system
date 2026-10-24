@@ -1,5 +1,7 @@
 ﻿#include <algorithm>
+#include <sstream>
 #include "Students.h"
+#include "Algorithms.h"
 
 // ==================== Student 类的成员函数实现 ====================
 
@@ -81,6 +83,39 @@ void Student::returnBook(BookResource* book) {
     cout << "归还成功：" << name << " 归还了《" << book->getTitle()
          << "》，当前已借 " << borrowedBooks.size() << "/" << MAX_BORROW
          << " 份。" << endl;
+}
+
+// ---------- 序列化（实验六：文件输入输出流） ----------
+void Student::saveTo(ostream& os) const {
+    os << "STU|" << name << '|' << id << '|' << className << '|';
+    for (size_t i = 0; i < borrowedBooks.size(); ++i) {
+        if (i > 0) os << ';';
+        os << borrowedBooks[i]->getId();     // 只存编号，不存地址（地址重跑会变）
+    }
+}
+
+void Student::loadFrom(istream& is, const Stack<BookResource*>& lib) {
+    string field;
+    getline(is, name, '|');
+    getline(is, id, '|');
+    getline(is, className, '|');
+    getline(is, field);                      // 借阅编号列表，如 "1001;1003"
+
+    istringstream ss(field);                 // 字符串流拆分 ';'
+    string token;
+    while (getline(ss, token, ';')) {
+        if (token.empty()) continue;
+        int rid = stoi(token);
+        // 用实验五的泛型算法在书库中按编号反查（复用已有成果）
+        auto it = findIf(lib.begin(), lib.end(),
+                         [rid](BookResource* r) { return r->getId() == rid; });
+        if (it != lib.end()) restoreBorrowed(*it);
+    }
+}
+
+void Student::restoreBorrowed(BookResource* book) {
+    borrowedBooks.push_back(book);
+    borrowRecords.push_back("《" + book->getTitle() + "》（历史借阅）");
 }
 
 // ---------- 输出学生信息 ----------

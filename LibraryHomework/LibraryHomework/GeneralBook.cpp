@@ -56,3 +56,21 @@ void GeneralBook::returnBook() {
          << "  ……  归还成功！" << endl;
     setAvailable(true);
 }
+
+// ---------- 序列化（实验六：文件输入输出流） ----------
+// 一行格式：RES|GB|编号|共有字段…|ISBN|版次
+const char* GeneralBook::typeTag() const { return "GB"; }
+
+void GeneralBook::saveTo(ostream& os) const {
+    os << "RES|GB|";
+    saveCommon(os);                      // 基类共有字段（protected，子类可复用）
+    os << '|' << isbn << '|' << edition;  // 本类特有字段
+}
+
+void GeneralBook::loadFrom(istream& is) {
+    loadCommon(is);
+    string f;
+    getline(is, isbn, '|');
+    getline(is, f);                       // 最后一个字段用不带分隔符的 getline
+    edition = f.empty() ? 0 : stoi(f);
+}

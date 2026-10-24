@@ -1,0 +1,5 @@
+; 账号数据 v1
+; 字段：USR|用户名|密码|角色(admin/reader)|绑定的学号(管理员留空)
+USR|admin|admin123|admin|
+USR|zhangsan|2021001|reader|2021001
+USR|lisi|2021002|reader|2021002

@@ -39,6 +39,11 @@ public:
     void printInfo() override;
     void borrow() override;
     void returnBook() override;
+
+    // ---------- 序列化（实验六）：标签 GB，特有字段 ISBN / 版次 ----------
+    const char* typeTag() const override;
+    void saveTo(ostream& os) const override;
+    void loadFrom(istream& is) override;
 };
 
 #endif // GENERALBOOK_H

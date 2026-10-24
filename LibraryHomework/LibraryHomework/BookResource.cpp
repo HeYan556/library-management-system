@@ -6,6 +6,7 @@
 
 // ---------- 构造函数 ----------
 BookResource::BookResource() {
+    id = 0;
     title = "";
     author = "";
     year = 0;
@@ -16,6 +17,7 @@ BookResource::BookResource() {
 }
 
 BookResource::BookResource(string t, string a, int y, string pub, int pages) {
+    this->id = 0;
     this->title = t;
     this->author = a;
     this->year = y;
@@ -59,6 +61,42 @@ void BookResource::printCommonInfo() const {
     cout << "  定价: "    << price       << endl;
     cout << "  状态: "
          << (available ? "可借" : "已借出")    << endl;
+}
+
+// ---------- 编号 ----------
+int  BookResource::getId() const  { return id; }
+void BookResource::setId(int i)   { id = i; }
+
+// ---------- 序列化：共有字段 ----------
+// 子类 saveTo/loadFrom 复用这两个函数，字段顺序与资源文件保持一致：
+//   编号 | 名称 | 责任人 | 年份 | 出版社 | 页数 | 定价 | 是否可借(1/0)
+void BookResource::saveCommon(ostream& os) const {
+    os << id << '|' << title << '|' << author << '|' << year << '|'
+       << publisher << '|' << pages << '|' << price << '|'
+       << (available ? 1 : 0);
+}
+
+void BookResource::loadCommon(istream& is) {
+    string f;
+    getline(is, f, '|');  id        = f.empty() ? 0 : stoi(f);
+    getline(is, title, '|');
+    getline(is, author, '|');
+    getline(is, f, '|');  year      = f.empty() ? 0 : stoi(f);
+    getline(is, publisher, '|');
+    getline(is, f, '|');  pages     = f.empty() ? 0 : stoi(f);
+    getline(is, f, '|');  price     = f.empty() ? 0.0 : stod(f);
+    getline(is, f, '|');  available = (f == "1");
+}
+
+// ---------- 流运算符：非虚接口，内部调用虚函数派发 ----------
+ostream& operator<<(ostream& os, const BookResource& r) {
+    r.saveTo(os);          // ★ 虚调用：写到哪个子类由对象真实类型决定
+    return os;
+}
+
+istream& operator>>(istream& is, BookResource& r) {
+    r.loadFrom(is);        // ★ 虚调用
+    return is;
 }
 
 // ---------- 纯虚函数在此不提供实现 ----------
