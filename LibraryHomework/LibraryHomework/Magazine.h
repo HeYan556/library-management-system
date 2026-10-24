@@ -28,10 +28,10 @@ public:
     void setPeriod(const string& p);
     void setChiefEditor(const string& c);
 
-    // ---------- 访问器 ----------
-    int    getIssueNo();
-    string getPeriod();
-    string getChiefEditor();
+    // ---------- 访问器（const：便于 const 对象与泛型谓词调用） ----------
+    int    getIssueNo()     const;
+    string getPeriod()      const;
+    string getChiefEditor() const;
 
     // ---------- 重写基类纯虚函数（override 显式声明） ----------
     void printInfo() override;

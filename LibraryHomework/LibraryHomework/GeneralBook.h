@@ -31,9 +31,9 @@ public:
     void setIsbn(const string& i);
     void setEdition(int e);
 
-    // ---------- 访问器 ----------
-    string getIsbn();
-    int    getEdition();
+    // ---------- 访问器（const：便于 const 对象与泛型谓词调用） ----------
+    string getIsbn()    const;
+    int    getEdition() const;
 
     // ---------- 重写基类纯虚函数（override 显式声明） ----------
     void printInfo() override;

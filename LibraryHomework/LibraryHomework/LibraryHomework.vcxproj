@@ -147,11 +147,11 @@
     <ClCompile Include="ElectronicResource.cpp" />
     <ClCompile Include="GeneralBook.cpp" />
     <ClCompile Include="Magazine.cpp" />
-    <ClCompile Include="Stack.cpp" />
     <ClCompile Include="Students.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Algorithms.h" />
     <ClInclude Include="BookResource.h" />
     <ClInclude Include="ElectronicResource.h" />
     <ClInclude Include="GeneralBook.h" />

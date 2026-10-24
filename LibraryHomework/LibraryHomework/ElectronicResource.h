@@ -28,10 +28,10 @@ public:
     void setUrl(const string& u);
     void setFileSize(double s);
 
-    // ---------- 访问器 ----------
-    string getFormat();
-    string getUrl();
-    double getFileSize();
+    // ---------- 访问器（const：便于 const 对象与泛型谓词调用） ----------
+    string getFormat()   const;
+    string getUrl()      const;
+    double getFileSize() const;
 
     // ---------- 重写基类纯虚函数（override 显式声明） ----------
     void printInfo() override;

@@ -25,9 +25,9 @@ void ElectronicResource::setUrl(const string& u)  { url = u; }
 void ElectronicResource::setFileSize(double s)    { fileSize = s; }
 
 // ---------- 访问器 ----------
-string ElectronicResource::getFormat()  { return format; }
-string ElectronicResource::getUrl()     { return url; }
-double ElectronicResource::getFileSize(){ return fileSize; }
+string ElectronicResource::getFormat()   const { return format; }
+string ElectronicResource::getUrl()      const { return url; }
+double ElectronicResource::getFileSize() const { return fileSize; }
 
 // ---------- 输出信息（重写基类纯虚函数） ----------
 void ElectronicResource::printInfo() {

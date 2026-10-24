@@ -27,9 +27,6 @@
     <ClCompile Include="Magazine.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Stack.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Students.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -38,6 +35,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Algorithms.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="BookResource.h">
       <Filter>头文件</Filter>
     </ClInclude>

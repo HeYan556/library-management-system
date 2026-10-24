@@ -49,16 +49,18 @@ public:
     void setAvailable(bool a);
 
     // ---------- 访问器（getters） ----------
-    string getTitle();
-    string getAuthor();
-    int    getYear();
-    string getPublisher();
-    int    getPages();
-    double getPrice();
-    bool   isAvailable();
+    // 实验五：统一加 const —— 不修改对象状态的查询操作都应是 const，
+    // 这样 const BookResource* 也能调用（泛型算法的谓词中常用）。
+    string getTitle()     const;
+    string getAuthor()    const;
+    int    getYear()      const;
+    string getPublisher() const;
+    int    getPages()     const;
+    double getPrice()     const;
+    bool   isAvailable()  const;
 
     // ---------- 共有字段输出（普通函数，供子类复用） ----------
-    void printCommonInfo();
+    void printCommonInfo() const;
 
     // ---------- 纯虚函数：接口契约，强制各子类实现 ----------
     virtual void printInfo() = 0;     // 完整信息输出（含子类特有字段）

@@ -23,9 +23,9 @@ void Magazine::setPeriod(const string& p)   { period = p; }
 void Magazine::setChiefEditor(const string& c){ chiefEditor = c; }
 
 // ---------- 访问器 ----------
-int    Magazine::getIssueNo()    { return issueNo; }
-string Magazine::getPeriod()     { return period; }
-string Magazine::getChiefEditor(){ return chiefEditor; }
+int    Magazine::getIssueNo()     const { return issueNo; }
+string Magazine::getPeriod()      const { return period; }
+string Magazine::getChiefEditor() const { return chiefEditor; }
 
 // ---------- 输出信息（重写基类纯虚函数） ----------
 void Magazine::printInfo() {

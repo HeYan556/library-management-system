@@ -20,8 +20,8 @@ void GeneralBook::setIsbn(const string& i){ isbn = i; }
 void GeneralBook::setEdition(int e)       { edition = e; }
 
 // ---------- 访问器 ----------
-string GeneralBook::getIsbn()    { return isbn; }
-int    GeneralBook::getEdition() { return edition; }
+string GeneralBook::getIsbn()    const { return isbn; }
+int    GeneralBook::getEdition() const { return edition; }
 
 // ---------- 输出信息（重写基类纯虚函数） ----------
 void GeneralBook::printInfo() {

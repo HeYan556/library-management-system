@@ -40,17 +40,17 @@ void BookResource::setPages(int p)              { pages = p; }
 void BookResource::setPrice(double p)           { price = p; }
 void BookResource::setAvailable(bool a)         { available = a; }
 
-// ---------- 访问器 ----------
-string BookResource::getTitle()    { return title; }
-string BookResource::getAuthor()   { return author; }
-int    BookResource::getYear()     { return year; }
-string BookResource::getPublisher(){ return publisher; }
-int    BookResource::getPages()    { return pages; }
-double BookResource::getPrice()    { return price; }
-bool   BookResource::isAvailable() { return available; }
+// ---------- 访问器（const：查询不修改对象状态） ----------
+string BookResource::getTitle()     const { return title; }
+string BookResource::getAuthor()    const { return author; }
+int    BookResource::getYear()      const { return year; }
+string BookResource::getPublisher() const { return publisher; }
+int    BookResource::getPages()     const { return pages; }
+double BookResource::getPrice()     const { return price; }
+bool   BookResource::isAvailable()  const { return available; }
 
 // ---------- 共有字段输出（供子类 printInfo 复用） ----------
-void BookResource::printCommonInfo() {
+void BookResource::printCommonInfo() const {
     cout << "  名称: "    << title       << endl;
     cout << "  责任人: "  << author      << endl;
     cout << "  年份: "    << year        << endl;

@@ -9,21 +9,22 @@
 using namespace std;
 
 // 一个学生最多可以借的资源份数
+// 实验五说明：MAX_BORROW 是"业务规则"，容器容量交给 vector 自己管理，
+// 二者分工明确 —— 容器负责存得下，规则负责借几份。
 const int MAX_BORROW = 3;
 
 // ==================== 学生类 Student ====================
-// 实验四升级：遵守依赖倒置原则（DIP）。
+// 依赖倒置原则（DIP）：只认 BookResource*，任意子类资源都能借。
 //
-//   升级前：borrowBook(GeneralBook*) + GeneralBook 值数组
-//           → 高层模块依赖具体子类，杂志/电子资源借不了
-//   升级后：borrowBook(BookResource*) + BookResource* 指针数组
-//           → 高层模块只依赖抽象基类，任意子类资源都能借
+// 实验五升级：
+//   借阅区 borrowedBooks 由定长数组 BookResource* borrowedBooks[MAX_BORROW]
+//   换成 std::vector<BookResource*>，于是可以支持"归还"（从容器中 erase），
+//   这是原先定长数组很难干净做到的。
 //
 // 与 BookResource 的关系：
-//   1) 依赖关系：borrowBook 通过基类指针调用虚函数 borrow()，
+//   1) 依赖关系：borrowBook/returnBook 通过基类指针调用虚函数，
 //      具体执行哪个子类的流程由运行时的对象类型决定（多态）。
-//   2) 组合关系：borrowedBooks 是基类指针数组，
-//      保存所借资源的地址（资源本身在书库/主函数中创建）。
+//   2) 组合关系：借阅区保存所借资源的地址（资源本身在书库/主函数中创建）。
 
 class Student {
 private:
@@ -31,33 +32,38 @@ private:
     string id;          // 学号
     string className;   // 班级
 
-    // 【组合】学生"拥有"自己的借阅区（基类指针数组，统一管理各类资源）
-    BookResource* borrowedBooks[MAX_BORROW];
-    int           borrowedCount;
+    // 【组合】学生的借阅区：容量由容器自管理，业务上限仍由 MAX_BORROW 控制
+    vector<BookResource*> borrowedBooks;
 
-    // 借阅记录
-    vector<string> borrowRecords;
+    // 借阅历史记录（归还后记录保留，作为历史凭证）
+    vector<string>        borrowRecords;
 
 public:
     // ---------- 构造函数 ----------
     Student();
     Student(string n, string id, string className);
 
-    // ---------- 访问器 ----------
-    string getName();
-    string getId();
-    string getClassName();
-    int    getBorrowedCount();
-    int    getMaxBorrow();
+    // ---------- 访问器（统一加 const：便于 const 对象/谓词调用） ----------
+    string getName()      const;
+    string getId()        const;
+    string getClassName() const;
+    int    getBorrowedCount() const;
+    int    getMaxBorrow()     const;
 
-    bool canBorrow();
+    // 对外提供借阅区只读视图，便于用泛型算法遍历
+    const vector<BookResource*>& getBorrowedBooks() const;
+
+    bool canBorrow() const;
 
     // ---------- 借书（依赖抽象 BookResource，多态调用） ----------
     void borrowBook(BookResource* book);
 
+    // ---------- 还书（实验五新增：依赖 vector 的 erase） ----------
+    void returnBook(BookResource* book);
+
     // ---------- 输出信息 ----------
-    void printInfo();
-    void printBorrowRecords();
+    void printInfo() const;
+    void printBorrowRecords() const;
 };
 
 #endif // STUDENTS_H
